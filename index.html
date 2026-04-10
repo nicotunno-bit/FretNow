@@ -418,7 +418,7 @@
                 <span class="vlabel">Malaxeur</span>
               </label>
               <label class="vehicle-option" onclick="toggleVehicle(this)">
-                <input type="checkbox" value="porte_engins"> <span class="vcheck"></span>
+                <input type="checkbox" value="porte-engins"> <span class="vcheck"></span>
                 <span class="vlabel">Porte-engins</span>
               </label>
               <label class="vehicle-option" onclick="toggleVehicle(this)">
@@ -878,21 +878,29 @@
     e.preventDefault();
 
     const btn = this.querySelector('.btn-submit');
+
+    // Connexion obligatoire pour tracer la course
+    if (!currentUser) {
+      openAuth();
+      showAuthMsg('Connectez-vous pour soumettre votre demande de transport.', 'error');
+      return;
+    }
+
     btn.disabled = true; btn.textContent = 'Envoi en cours…';
 
-    const pickupAddress   = document.getElementById('depart').value;
-    const vehicleType     = document.getElementById('vehicleType').value;
+    const pickupAddress = document.getElementById('depart').value;
+    const vehicleType   = document.getElementById('vehicleType').value;
 
     const courseData = {
-      client_id:            currentUser ? currentUser.id : null,
-      pickup_address:       pickupAddress,
-      delivery_address:     document.getElementById('arrivee').value,
-      package_type:         document.getElementById('colisage').value,
-      weight_kg:            parseFloat(document.getElementById('poids').value) || null,
-      declared_value:       parseFloat(document.getElementById('valeur').value) || null,
+      client_id:             currentUser.id,
+      pickup_address:        pickupAddress,
+      delivery_address:      document.getElementById('arrivee').value,
+      package_type:          document.getElementById('colisage').value,
+      weight_kg:             parseFloat(document.getElementById('poids').value)  || null,
+      declared_value:        parseFloat(document.getElementById('valeur').value) || null,
       vehicle_type_required: vehicleType,
-      delay_required:       document.getElementById('delaiValue').value,
-      notes:                [
+      delay_required:        document.getElementById('delaiValue').value,
+      notes: [
         document.getElementById('infos').value,
         'Contact: ' + document.getElementById('societe').value,
         document.getElementById('telephone').value,
@@ -901,27 +909,30 @@
       status: 'pending',
     };
 
-    // 1. Insérer la course dans la table `courses`
-    const { data: course, error } = await sb.from('courses').insert([courseData]).select().single();
+    // 1. Insérer dans la table `courses`
+    const { data: course, error } = await sb
+      .from('courses')
+      .insert([courseData])
+      .select()
+      .single();
 
     if (error) {
       console.error('Erreur insertion course:', error);
       btn.disabled = false; btn.textContent = 'Demander mon devis';
-      document.getElementById('modalOverlay').classList.add('active');
+      alert('Erreur : ' + error.message);
       return;
     }
 
-    // 2. Lancer le dispatch automatique (géocode + matching + notification transporteurs)
+    // 2. Déclencher le dispatch (Edge Functions, non bloquant)
     if (course && window.FretNowAPI) {
       try {
         await window.FretNowAPI.courses.dispatchCourse(course.id, pickupAddress, vehicleType);
       } catch (dispatchErr) {
-        // Pas bloquant : le dispatch peut être relancé manuellement
-        console.warn('Dispatch non disponible (Edge Functions non déployées ?):', dispatchErr.message);
+        console.warn('Dispatch non disponible (Edge Functions non déployées) :', dispatchErr.message);
       }
     }
 
-    if (currentUser) loadUserOrders(currentUser.id);
+    loadUserOrders(currentUser.id);
     btn.disabled = false; btn.textContent = 'Demander mon devis';
     document.getElementById('modalOverlay').classList.add('active');
   });
@@ -935,18 +946,20 @@
     const btn = this.querySelector('.btn-submit');
     btn.disabled = true; btn.textContent = 'Envoi en cours…';
 
-    // Types de véhicules cochés
-    const checkedTypes = [...document.querySelectorAll('#vehicleCheckGroup input:checked')].map(cb => cb.value);
+    // Types de véhicules cochés (valeurs correspondant aux CHECK du schema)
+    const checkedTypes = [...document.querySelectorAll('#vehicleCheckGroup input:checked')]
+      .map(cb => cb.value);
 
-    // 1. Insérer le transporteur dans la table `transporteurs`
+    // 1. Insérer dans la table `transporteurs`
     const transporteurData = {
-      company_name:  document.getElementById('c_societe').value,
-      siret:         document.getElementById('c_siret').value,
-      contact_name:  document.getElementById('c_contact').value,
-      email:         document.getElementById('c_email').value,
-      phone:         document.getElementById('c_tel').value,
-      status:        'pending',   // sera validé manuellement en 'active'
-      is_available:  false,
+      user_id:      currentUser ? currentUser.id : null, // lié au compte si connecté
+      company_name: document.getElementById('c_societe').value,
+      siret:        document.getElementById('c_siret').value || null,
+      contact_name: document.getElementById('c_contact').value || null,
+      email:        document.getElementById('c_email').value,
+      phone:        document.getElementById('c_tel').value || null,
+      status:       'pending',     // validé manuellement par l'admin
+      is_available: false,
     };
 
     const { data: transporteur, error: tErr } = await sb
@@ -958,20 +971,21 @@
     if (tErr) {
       console.error('Erreur inscription transporteur:', tErr);
       btn.disabled = false; btn.textContent = 'Soumettre ma candidature';
-      document.getElementById('modalCarrierOverlay').classList.add('active');
+      alert('Erreur : ' + tErr.message);
       return;
     }
 
-    // 2. Insérer chaque type de véhicule dans la table `vehicles`
+    // 2. Insérer chaque véhicule dans la table `vehicles`
     if (transporteur && checkedTypes.length > 0) {
+      const maxWeightKg = parseFloat(document.getElementById('c_charge_max').value) * 1000 || null;
       const vehicleRows = checkedTypes.map(type => ({
         transporteur_id: transporteur.id,
-        type:            type,
-        max_weight_kg:   parseFloat(document.getElementById('c_charge_max').value) * 1000 || null,
+        type,
+        max_weight_kg:   maxWeightKg,
         is_active:       true,
       }));
       const { error: vErr } = await sb.from('vehicles').insert(vehicleRows);
-      if (vErr) console.warn('Erreur insertion véhicules:', vErr);
+      if (vErr) console.warn('Erreur véhicules:', vErr.message);
     }
 
     btn.disabled = false; btn.textContent = 'Soumettre ma candidature';

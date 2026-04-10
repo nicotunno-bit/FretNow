@@ -401,20 +401,24 @@ ALTER TABLE public.dispatch_requests  ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "users_own_profile" ON public.users
   FOR ALL USING (auth.uid() = id);
 
--- Transporteurs : lecture publique (pour le matching), écriture propre
-CREATE POLICY "transporteurs_read"  ON public.transporteurs FOR SELECT USING (TRUE);
-CREATE POLICY "transporteurs_write" ON public.transporteurs
-  FOR ALL USING (auth.uid() = user_id);
+-- Transporteurs : lecture publique, inscription anonyme autorisée (admin valide manuellement)
+CREATE POLICY "transporteurs_read"   ON public.transporteurs FOR SELECT USING (TRUE);
+CREATE POLICY "transporteurs_insert" ON public.transporteurs FOR INSERT WITH CHECK (TRUE);
+CREATE POLICY "transporteurs_update" ON public.transporteurs FOR UPDATE USING (auth.uid() = user_id);
+CREATE POLICY "transporteurs_delete" ON public.transporteurs FOR DELETE USING (auth.uid() = user_id);
 
--- Vehicles : lecture publique, écriture par le transporteur propriétaire
-CREATE POLICY "vehicles_read"  ON public.vehicles FOR SELECT USING (TRUE);
-CREATE POLICY "vehicles_write" ON public.vehicles
-  FOR ALL USING (
-    auth.uid() = (SELECT user_id FROM public.transporteurs WHERE id = transporteur_id)
-  );
+-- Vehicles : lecture publique, insert libre (inscription transporteur), update/delete par propriétaire
+CREATE POLICY "vehicles_read"   ON public.vehicles FOR SELECT USING (TRUE);
+CREATE POLICY "vehicles_insert" ON public.vehicles FOR INSERT WITH CHECK (TRUE);
+CREATE POLICY "vehicles_update" ON public.vehicles FOR UPDATE USING (
+  auth.uid() = (SELECT user_id FROM public.transporteurs WHERE id = transporteur_id)
+);
+CREATE POLICY "vehicles_delete" ON public.vehicles FOR DELETE USING (
+  auth.uid() = (SELECT user_id FROM public.transporteurs WHERE id = transporteur_id)
+);
 
--- Locations : lecture par client concerné ou transporteur, écriture par transporteur
-CREATE POLICY "locations_write" ON public.locations
+-- Locations : insert par transporteur authentifié, lecture par transporteur + client concerné
+CREATE POLICY "locations_insert" ON public.locations
   FOR INSERT WITH CHECK (
     auth.uid() = (SELECT user_id FROM public.transporteurs WHERE id = transporteur_id)
   );
@@ -425,10 +429,14 @@ CREATE POLICY "locations_read" ON public.locations
     auth.uid() = (SELECT client_id FROM public.courses WHERE id = course_id)
   );
 
--- Courses : client voit ses propres courses, transporteur voit ses missions
-CREATE POLICY "courses_client"  ON public.courses
-  FOR ALL USING (auth.uid() = client_id);
-CREATE POLICY "courses_transporter" ON public.courses
+-- Courses : INSERT réservé au client connecté (auth.uid() = client_id obligatoire)
+CREATE POLICY "courses_insert" ON public.courses
+  FOR INSERT WITH CHECK (auth.uid() = client_id);
+CREATE POLICY "courses_select_client" ON public.courses
+  FOR SELECT USING (auth.uid() = client_id);
+CREATE POLICY "courses_update_client" ON public.courses
+  FOR UPDATE USING (auth.uid() = client_id);
+CREATE POLICY "courses_select_transporter" ON public.courses
   FOR SELECT USING (
     auth.uid() = (SELECT user_id FROM public.transporteurs WHERE id = transporteur_id)
   );
