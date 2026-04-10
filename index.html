@@ -720,20 +720,20 @@
     document.getElementById('dashboard').classList.remove('visible');
   }
 
-  // ─── CHARGER LES COMMANDES ───
+  // ─── CHARGER LES COURSES (nouvelle BDD) ───
   async function loadUserOrders(userId) {
     const { data: orders, error } = await sb
-      .from('orders')
+      .from('courses')           // ← nouvelle table
       .select('*')
-      .eq('user_id', userId)
+      .eq('client_id', userId)   // ← nouvelle colonne
       .order('created_at', { ascending: false });
 
-    if (error) { console.error('Erreur chargement commandes:', error); return; }
+    if (error) { console.error('Erreur chargement courses:', error); return; }
 
-    // stats
-    const total = orders.length;
-    const pending = orders.filter(o => o.status === 'pending' || o.status === 'quoted').length;
-    const transit = orders.filter(o => o.status === 'in_transit').length;
+    // stats avec les nouveaux statuts
+    const total   = orders.length;
+    const pending = orders.filter(o => ['pending','dispatching'].includes(o.status)).length;
+    const transit = orders.filter(o => ['assigned','en_route','picked_up'].includes(o.status)).length;
     const done    = orders.filter(o => o.status === 'delivered').length;
 
     document.getElementById('statTotal').textContent   = total;
@@ -752,25 +752,29 @@
   }
 
   function renderOrdersTable(orders) {
+    // Statuts de la nouvelle BDD
     const statusLabels = {
-      pending:   { label: 'En attente', cls: 'status-pending' },
-      quoted:    { label: 'Devis reçu', cls: 'status-pending' },
-      confirmed: { label: 'Confirmé',   cls: 'status-confirmed' },
-      in_transit:{ label: 'En transit', cls: 'status-transit' },
-      delivered: { label: 'Livré',      cls: 'status-delivered' },
+      pending:     { label: 'En attente',      cls: 'status-pending'   },
+      dispatching: { label: 'Recherche...',    cls: 'status-pending'   },
+      assigned:    { label: 'Assigné',         cls: 'status-confirmed' },
+      en_route:    { label: 'En route',        cls: 'status-transit'   },
+      picked_up:   { label: 'Chargé',          cls: 'status-transit'   },
+      delivered:   { label: 'Livré',           cls: 'status-delivered' },
+      cancelled:   { label: 'Annulé',          cls: 'status-pending'   },
+      failed:      { label: 'Aucun transport', cls: 'status-pending'   },
     };
 
     const tbody = document.getElementById('ordersTbody');
     tbody.innerHTML = orders.map((o, i) => {
       const s = statusLabels[o.status] || { label: o.status, cls: 'status-pending' };
       const date = new Date(o.created_at).toLocaleDateString('fr-FR');
-      const ref = 'TLF-' + String(i + 1).padStart(4, '0');
+      const ref = 'FN-' + String(i + 1).padStart(4, '0');
       return `<tr>
         <td style="font-family:var(--font-display);font-weight:700;color:var(--orange);">${ref}</td>
         <td>${o.pickup_address || '—'}</td>
         <td>${o.delivery_address || '—'}</td>
         <td>${o.package_type || '—'}</td>
-        <td>${o.vehicle_type || '—'}</td>
+        <td>${o.vehicle_type_required || '—'}</td>
         <td>${o.delay_required || '—'}</td>
         <td><span class="status-badge ${s.cls}">${s.label}</span></td>
         <td>${date}</td>
@@ -868,77 +872,109 @@
   }
 
   // ══════════════════════════════
-  // TRANSPORT FORM → SUPABASE
+  // TRANSPORT FORM → TABLE courses (nouvelle BDD)
   // ══════════════════════════════
   document.getElementById('transportForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const orderData = {
-      pickup_address:   document.getElementById('depart').value,
-      delivery_address: document.getElementById('arrivee').value,
-      package_type:     document.getElementById('colisage').value,
-      quantity:         parseInt(document.getElementById('quantite').value) || 1,
-      dim_l:            parseFloat(document.getElementById('dim_l').value) || null,
-      dim_w:            parseFloat(document.getElementById('dim_w').value) || null,
-      dim_h:            parseFloat(document.getElementById('dim_h').value) || null,
-      weight_kg:        parseFloat(document.getElementById('poids').value) || null,
-      declared_value:   parseFloat(document.getElementById('valeur').value) || null,
-      vehicle_type:     document.getElementById('vehicleType').value,
-      delay_required:   document.getElementById('delaiValue').value,
-      notes:            document.getElementById('infos').value,
-      contact_company:  document.getElementById('societe').value,
-      contact_phone:    document.getElementById('telephone').value,
-      contact_email:    document.getElementById('email').value,
-      status:           'pending',
-      user_id:          currentUser ? currentUser.id : null,
+    const btn = this.querySelector('.btn-submit');
+    btn.disabled = true; btn.textContent = 'Envoi en cours…';
+
+    const pickupAddress   = document.getElementById('depart').value;
+    const vehicleType     = document.getElementById('vehicleType').value;
+
+    const courseData = {
+      client_id:            currentUser ? currentUser.id : null,
+      pickup_address:       pickupAddress,
+      delivery_address:     document.getElementById('arrivee').value,
+      package_type:         document.getElementById('colisage').value,
+      weight_kg:            parseFloat(document.getElementById('poids').value) || null,
+      declared_value:       parseFloat(document.getElementById('valeur').value) || null,
+      vehicle_type_required: vehicleType,
+      delay_required:       document.getElementById('delaiValue').value,
+      notes:                [
+        document.getElementById('infos').value,
+        'Contact: ' + document.getElementById('societe').value,
+        document.getElementById('telephone').value,
+        document.getElementById('email').value,
+      ].filter(Boolean).join(' | '),
+      status: 'pending',
     };
 
-    // Sauvegarder dans Supabase
-    const { error } = await sb.from('orders').insert([orderData]);
+    // 1. Insérer la course dans la table `courses`
+    const { data: course, error } = await sb.from('courses').insert([courseData]).select().single();
 
     if (error) {
-      console.error('Erreur insertion commande:', error);
-      // On affiche quand même la modale de succès (mode dégradé)
-    } else if (currentUser) {
-      loadUserOrders(currentUser.id); // rafraîchir le dashboard
+      console.error('Erreur insertion course:', error);
+      btn.disabled = false; btn.textContent = 'Demander mon devis';
+      document.getElementById('modalOverlay').classList.add('active');
+      return;
     }
 
+    // 2. Lancer le dispatch automatique (géocode + matching + notification transporteurs)
+    if (course && window.FretNowAPI) {
+      try {
+        await window.FretNowAPI.courses.dispatchCourse(course.id, pickupAddress, vehicleType);
+      } catch (dispatchErr) {
+        // Pas bloquant : le dispatch peut être relancé manuellement
+        console.warn('Dispatch non disponible (Edge Functions non déployées ?):', dispatchErr.message);
+      }
+    }
+
+    if (currentUser) loadUserOrders(currentUser.id);
+    btn.disabled = false; btn.textContent = 'Demander mon devis';
     document.getElementById('modalOverlay').classList.add('active');
   });
 
   // ══════════════════════════════
-  // CARRIER FORM → SUPABASE
+  // CARRIER FORM → TABLE transporteurs + vehicles (nouvelle BDD)
   // ══════════════════════════════
   document.getElementById('carrierForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const checked = [...document.querySelectorAll('#vehicleCheckGroup input:checked')].map(cb => cb.value);
+    const btn = this.querySelector('.btn-submit');
+    btn.disabled = true; btn.textContent = 'Envoi en cours…';
 
-    const carrierData = {
-      company_name:    document.getElementById('c_societe').value,
-      siret:           document.getElementById('c_siret').value,
-      licence:         document.getElementById('c_licence').value,
-      vat_number:      document.getElementById('c_tva').value,
-      address:         document.getElementById('c_adresse').value,
-      contact_name:    document.getElementById('c_contact').value,
-      contact_role:    document.getElementById('c_poste').value,
-      email:           document.getElementById('c_email').value,
-      phone:           document.getElementById('c_tel').value,
-      nb_vehicles:     parseInt(document.getElementById('c_nb_vehicules').value) || null,
-      max_payload:     parseFloat(document.getElementById('c_charge_max').value) || null,
-      vehicle_types:   checked.join(','),
-      zones:           document.getElementById('zonesValue').value,
-      max_radius_km:   parseInt(document.getElementById('c_rayon').value) || null,
-      international:   document.getElementById('c_international').value,
-      insurer:         document.getElementById('c_assureur').value,
-      guarantee_amount:parseFloat(document.getElementById('c_garantie').value) || null,
-      presentation:    document.getElementById('c_presentation').value,
-      status:          'pending_review',
+    // Types de véhicules cochés
+    const checkedTypes = [...document.querySelectorAll('#vehicleCheckGroup input:checked')].map(cb => cb.value);
+
+    // 1. Insérer le transporteur dans la table `transporteurs`
+    const transporteurData = {
+      company_name:  document.getElementById('c_societe').value,
+      siret:         document.getElementById('c_siret').value,
+      contact_name:  document.getElementById('c_contact').value,
+      email:         document.getElementById('c_email').value,
+      phone:         document.getElementById('c_tel').value,
+      status:        'pending',   // sera validé manuellement en 'active'
+      is_available:  false,
     };
 
-    const { error } = await sb.from('carriers').insert([carrierData]);
-    if (error) console.error('Erreur inscription transporteur:', error);
+    const { data: transporteur, error: tErr } = await sb
+      .from('transporteurs')
+      .insert([transporteurData])
+      .select()
+      .single();
 
+    if (tErr) {
+      console.error('Erreur inscription transporteur:', tErr);
+      btn.disabled = false; btn.textContent = 'Soumettre ma candidature';
+      document.getElementById('modalCarrierOverlay').classList.add('active');
+      return;
+    }
+
+    // 2. Insérer chaque type de véhicule dans la table `vehicles`
+    if (transporteur && checkedTypes.length > 0) {
+      const vehicleRows = checkedTypes.map(type => ({
+        transporteur_id: transporteur.id,
+        type:            type,
+        max_weight_kg:   parseFloat(document.getElementById('c_charge_max').value) * 1000 || null,
+        is_active:       true,
+      }));
+      const { error: vErr } = await sb.from('vehicles').insert(vehicleRows);
+      if (vErr) console.warn('Erreur insertion véhicules:', vErr);
+    }
+
+    btn.disabled = false; btn.textContent = 'Soumettre ma candidature';
     document.getElementById('modalCarrierOverlay').classList.add('active');
   });
 
