@@ -20,7 +20,7 @@
     <a href="#fonctionnement">Comment ça marche</a>
     <a href="#services">Services</a>
     <a href="#commande" class="nav-cta">Devis Express</a>
-    <button onclick="openAuth('client')" id="btnClientLogin" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--muted);font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;cursor:pointer;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--orange)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,0.15)'">Connexion</button>
+    <button type="button" onclick="openAuth('client')" id="btnClientLogin" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--muted);font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;cursor:pointer;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--orange)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,0.15)'">Connexion</button>
     <div class="user-badge" id="userBadgeClient">
       <div class="avatar" id="userAvatarClient">?</div>
       <span id="userEmailClient" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
@@ -31,7 +31,7 @@
     <a href="#carrier-inscription">S'inscrire</a>
     <a href="#carrier-avantages">Avantages</a>
     <a href="#carrier-inscription" class="nav-cta">Rejoindre le réseau</a>
-    <button onclick="openAuth('carrier')" id="btnCarrierLogin" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--muted);font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;cursor:pointer;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--orange)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,0.15)'">Connexion</button>
+    <button type="button" onclick="openAuth('carrier')" id="btnCarrierLogin" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--muted);font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;cursor:pointer;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--orange)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,0.15)'">Connexion</button>
     <div class="user-badge" id="userBadgeCarrier">
       <div class="avatar" id="userAvatarCarrier">?</div>
       <span id="userEmailCarrier" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
@@ -1094,9 +1094,9 @@
   // ═══════════════════════════════════════════════════════════
   //  AUTH MODAL
   // ═══════════════════════════════════════════════════════════
-  function openAuth(accountType = 'client') {
-    setAccountType(accountType);
+  function openAuth(accountType) {
     document.getElementById('authModalOverlay').classList.add('active');
+    try { setAccountType(accountType || 'client'); } catch(e) { console.warn(e); }
   }
   window.openAuth = openAuth;
 
