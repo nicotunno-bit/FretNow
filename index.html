@@ -671,6 +671,13 @@
   // ═══════════════════════════════════════════════════════════
   //  CONFIG SUPABASE
   // ═══════════════════════════════════════════════════════════
+  // État global (déclaré EN PREMIER pour éviter la TDZ si Supabase crash)
+  let currentUser = null;
+  let currentRole = null;
+  let currentTransporter = null;
+  let authAccountType = 'client';
+  let activeDispatchChannel = null;
+
   const SUPABASE_URL = 'https://zcqhbdzxjsoobjhbuzhi.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable_5e7RBmRBZqEiuWE5GOnWLQ_NvRNpRAD';
 
@@ -684,13 +691,6 @@
   // Exposé pour les modules src/*.js
   window._supabaseClient = sb;
   window.sb = sb;
-
-  // État global
-  let currentUser = null;
-  let currentRole = null;             // 'client' | 'carrier' | null
-  let currentTransporter = null;      // { id, is_available, ... } si carrier
-  let authAccountType = 'client';     // quel onglet est sélectionné dans le modal
-  let activeDispatchChannel = null;   // canal Realtime dispatch en cours
 
   // ═══════════════════════════════════════════════════════════
   //  INIT : check session au chargement
