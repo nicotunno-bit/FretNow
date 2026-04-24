@@ -6,9 +6,8 @@
 
 // ── Initialisation du client Supabase ────────────────────────
 // IMPORTANT : Ces valeurs sont exposées côté client (c'est normal pour Supabase anon key)
-const SUPABASE_URL     = 'https://hqbhfdkmryxwuozrtcwu.supabase.co'
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhxYmhmZGttcnl4d3VvenJ0Y3d1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNzAxNDIsImV4cCI6MjA4OTY0NjE0Mn0.kGEQm_F5wdb010J6j_36rtZah4NQygWLZlpb4MCLjGE'
-
+const SUPABASE_URL = 'https://zcqhbdzxjsoobjhbuzhi.supabase.co/rest/v1/';
+const SUPABASE_ANON_KEY = 'sb_publishable_5e7RBmRBZqEiuWE5GOnWLQ_NvRNpRAD';
 // Récupère le client Supabase déjà initialisé dans index.html
 // ou crée un nouveau si ce fichier est importé séparément
 function getSupabase() {
