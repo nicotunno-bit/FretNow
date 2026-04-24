@@ -24,6 +24,146 @@ body {
   overflow-x: hidden;
   cursor: default;
 }
+/* Cascade de recherche live */
+  .radius-cascade {
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    padding: 24px;
+    margin: 20px 0;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .radius-cascade-title {
+    font-family: var(--font-display); font-size: 14px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase; color: var(--orange);
+    margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+  }
+  .radius-cascade-title::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--orange); animation: pulse 1s infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.3; } }
+  .radius-steps { display: flex; gap: 8px; margin-bottom: 14px; }
+  .radius-step {
+    flex: 1; padding: 10px; text-align: center;
+    background: var(--dark4); border: 1px solid rgba(255,255,255,0.06);
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.1em; color: var(--muted);
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+    transition: all 0.3s;
+  }
+  .radius-step.done { background: rgba(80,200,120,0.12); color: #5dc87a; border-color: #5dc87a; }
+  .radius-step.active { background: var(--orange); color: var(--dark); border-color: var(--orange); }
+  .radius-status { font-size: 14px; color: rgba(240,237,232,0.65); line-height: 1.5; }
+
+  /* Notification dispatch (transporteur) */
+  .dispatch-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.88); backdrop-filter: blur(10px);
+    z-index: 500; display: flex; align-items: center; justify-content: center;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+  .dispatch-card {
+    background: var(--dark3); border: 2px solid var(--orange);
+    padding: 32px; width: 90%; max-width: 520px;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    box-shadow: 0 0 60px rgba(255,107,0,0.4);
+  }
+  .dispatch-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .dispatch-badge {
+    background: var(--orange); color: var(--dark);
+    font-family: var(--font-display); font-size: 12px; font-weight: 800;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 4px 12px;
+    clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+  }
+  .dispatch-timer {
+    font-family: var(--font-display); font-size: 32px; font-weight: 900;
+    color: var(--orange); line-height: 1;
+  }
+  .dispatch-timer + span { color: var(--muted); font-size: 14px; margin-left: 4px; }
+  .dispatch-route { margin-bottom: 20px; }
+  .dispatch-point {
+    display: flex; align-items: center; gap: 12px; padding: 10px 0;
+    font-size: 15px; color: var(--text);
+  }
+  .dispatch-point .dot {
+    width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+    border: 2px solid var(--orange);
+  }
+  .dispatch-point.pickup .dot { background: var(--orange); }
+  .dispatch-line {
+    margin-left: 5px; width: 2px; height: 20px;
+    background: var(--orange); opacity: 0.3;
+  }
+  .dispatch-meta {
+    display: flex; gap: 16px; padding: 14px; background: var(--dark4);
+    font-size: 13px; color: var(--muted); flex-wrap: wrap; margin-bottom: 24px;
+  }
+  .dispatch-actions { display: flex; gap: 12px; }
+  .dispatch-actions button {
+    flex: 1; padding: 14px; border: none;
+    font-family: var(--font-display); font-size: 15px; font-weight: 800;
+    letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    transition: all 0.2s;
+  }
+  .btn-refuse { background: var(--dark4); color: var(--muted); border: 1px solid rgba(255,255,255,0.1) !important; }
+  .btn-refuse:hover { background: #2a1a1a; color: #ff6b6b; }
+  .btn-accept { background: var(--orange); color: var(--dark); }
+  .btn-accept:hover { background: var(--orange-hot); transform: translateY(-2px); }
+
+  /* Toggle disponibilité transporteur */
+  .availability-toggle {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 10px 18px; background: var(--dark4);
+    border: 1px solid rgba(255,255,255,0.08); cursor: pointer;
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+    transition: all 0.2s;
+  }
+  .availability-toggle:hover { border-color: var(--orange); }
+  .availability-switch {
+    width: 42px; height: 22px; background: var(--muted); border-radius: 11px;
+    position: relative; transition: background 0.2s;
+  }
+  .availability-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: white; transition: left 0.2s;
+  }
+  .availability-toggle.on .availability-switch { background: #5dc87a; }
+  .availability-toggle.on .availability-switch::after { left: 22px; }
+  .availability-label {
+    font-family: var(--font-display); font-size: 13px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text);
+  }
+
+  /* Bouton actions sur les courses transporteur */
+  .course-action-btn {
+    padding: 6px 12px; font-size: 11px;
+    background: var(--orange); color: var(--dark); border: none;
+    font-family: var(--font-display); font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; cursor: pointer;
+    clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+  }
+  .course-action-btn:hover { background: var(--orange-hot); }
+  .course-action-btn.secondary { background: var(--dark4); color: var(--text); border: 1px solid rgba(255,255,255,0.1); }
+
+  /* Account-type toggle dans auth modal */
+  .account-type-switch {
+    display: flex; gap: 0; margin-bottom: 20px;
+    background: var(--dark4); padding: 4px;
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+  }
+  .account-type-btn {
+    flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer;
+    font-family: var(--font-display); font-size: 12px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    transition: all 0.2s;
+  }
+  .account-type-btn.active { background: var(--orange); color: var(--dark); }
 
 /* ─── NOISE OVERLAY ─── */
 body::before {
