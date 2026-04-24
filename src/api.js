@@ -4,15 +4,9 @@
 //  Centralise tous les appels Supabase + Edge Functions
 // ============================================================
 
-// ── Initialisation du client Supabase ────────────────────────
-// IMPORTANT : Ces valeurs sont exposées côté client (c'est normal pour Supabase anon key)
-const SUPABASE_URL = 'https://zcqhbdzxjsoobjhbuzhi.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_5e7RBmRBZqEiuWE5GOnWLQ_NvRNpRAD';
-// Récupère le client Supabase déjà initialisé dans index.html
-// ou crée un nouveau si ce fichier est importé séparément
+// Récupère le client Supabase initialisé dans index.html
 function getSupabase() {
-  if (typeof supabase !== 'undefined') return supabase
-  return window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  return window._supabaseClient || window.sb;
 }
 
 // ── Helpers ───────────────────────────────────────────────────
