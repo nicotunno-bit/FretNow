@@ -807,10 +807,10 @@ footer {
   width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;
   border: 1px solid rgba(255,255,255,0.25);
   display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
-.cgu-check.checked { background: var(--orange); border-color: var(--orange); }
-.cgu-check.checked::after { content: '✓'; font-size: 11px; color: var(--dark); font-weight: 700; }
+#c_cgu:checked + .cgu-check { background: var(--orange); border-color: var(--orange); }
+#c_cgu:checked + .cgu-check::after { content: '✓'; font-size: 11px; color: var(--dark); font-weight: 700; }
 
 /* ─── ZONE TAGS INPUT ─── */
 .tags-input-wrapper {

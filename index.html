@@ -503,10 +503,10 @@
           </div>
 
           <div class="form-group full" style="margin-top:8px;">
-            <label style="display:flex;align-items:flex-start;gap:14px;cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;color:rgba(240,237,232,0.6);" onclick="toggleCguCheck(event)">
-              <input type="checkbox" id="c_cgu" required style="display:none;">
-              <span class="cgu-check" id="c_cgu_visual"></span>
-              J'accepte les <a href="#" style="color:var(--orange);" onclick="event.stopPropagation()">conditions générales</a> du réseau FretNow et je certifie que les informations renseignées sont exactes.
+            <label style="display:flex;align-items:flex-start;gap:14px;cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;color:rgba(240,237,232,0.6);">
+              <input type="checkbox" id="c_cgu" required style="position:absolute;opacity:0;width:0;height:0;">
+              <span class="cgu-check"></span>
+              J'accepte les <a href="#" style="color:var(--orange);">conditions générales</a> du réseau FretNow et je certifie que les informations renseignées sont exactes.
             </label>
           </div>
 
@@ -1180,14 +1180,6 @@
     const el = document.getElementById('authMsg');
     el.textContent = '';
     el.className = 'auth-msg';
-  }
-
-  function toggleCguCheck(e) {
-    const cb = document.getElementById('c_cgu');
-    const vis = document.getElementById('c_cgu_visual');
-    if (!cb || !vis) return;
-    cb.checked = !cb.checked;
-    vis.classList.toggle('checked', cb.checked);
   }
 
   // ─── LOGIN ───
