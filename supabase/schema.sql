@@ -25,8 +25,13 @@ CREATE TABLE public.users (
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.users (id, email, full_name)
-  VALUES (NEW.id, NEW.email, NEW.raw_user_meta_data->>'full_name');
+  INSERT INTO public.users (id, email, full_name, phone)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    NEW.raw_user_meta_data->>'full_name',
+    NEW.raw_user_meta_data->>'phone'
+  );
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -195,6 +200,7 @@ CREATE TABLE public.dispatch_requests (
   id                UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
   course_id         UUID        NOT NULL REFERENCES public.courses(id) ON DELETE CASCADE,
   transporteur_id   UUID        NOT NULL REFERENCES public.transporteurs(id),
+  vehicle_id        UUID        REFERENCES public.vehicles(id),
 
   priority          INTEGER     NOT NULL,     -- 1 = premier notifié
   status            TEXT        NOT NULL DEFAULT 'pending' CHECK (
