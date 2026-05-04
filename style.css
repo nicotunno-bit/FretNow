@@ -802,6 +802,16 @@ footer {
 }
 .vehicle-option:has(input:checked) span.vlabel { color: var(--text); }
 
+/* ─── CGU CHECKBOX ─── */
+.cgu-check {
+  width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;
+  border: 1px solid rgba(255,255,255,0.25);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.15s, border-color 0.15s;
+}
+.cgu-check.checked { background: var(--orange); border-color: var(--orange); }
+.cgu-check.checked::after { content: '✓'; font-size: 11px; color: var(--dark); font-weight: 700; }
+
 /* ─── ZONE TAGS INPUT ─── */
 .tags-input-wrapper {
   background: var(--dark4);
@@ -940,7 +950,7 @@ footer {
 }
 .dashboard-welcome span { color: var(--orange); }
 .dashboard-stats {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 2px; margin-bottom: 40px;
 }
 .dash-stat {

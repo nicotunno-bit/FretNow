@@ -503,9 +503,10 @@
           </div>
 
           <div class="form-group full" style="margin-top:8px;">
-            <label style="display:flex;align-items:flex-start;gap:14px;cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;color:rgba(240,237,232,0.6);">
-              <input type="checkbox" id="c_cgu" required style="width:18px;height:18px;accent-color:var(--orange);flex-shrink:0;margin-top:2px;">
-              J'accepte les <a href="#" style="color:var(--orange);">conditions générales</a> du réseau FretNow et je certifie que les informations renseignées sont exactes.
+            <label style="display:flex;align-items:flex-start;gap:14px;cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:400;letter-spacing:0;text-transform:none;color:rgba(240,237,232,0.6);" onclick="toggleCguCheck(event)">
+              <input type="checkbox" id="c_cgu" required style="display:none;">
+              <span class="cgu-check" id="c_cgu_visual"></span>
+              J'accepte les <a href="#" style="color:var(--orange);" onclick="event.stopPropagation()">conditions générales</a> du réseau FretNow et je certifie que les informations renseignées sont exactes.
             </label>
           </div>
 
@@ -538,6 +539,8 @@
       <div class="dash-stat"><div class="dash-stat-num" id="tStatActive">0</div><div class="dash-stat-label">En cours</div></div>
       <div class="dash-stat"><div class="dash-stat-num" id="tStatDone">0</div><div class="dash-stat-label">Livrées</div></div>
       <div class="dash-stat"><div class="dash-stat-num" id="tStatRating">—</div><div class="dash-stat-label">Note moyenne</div></div>
+      <div class="dash-stat"><div class="dash-stat-num" id="tStatWeight">0 t</div><div class="dash-stat-label">Tonnage traité</div></div>
+      <div class="dash-stat"><div class="dash-stat-num" id="tStatAcceptance">—</div><div class="dash-stat-label">Taux d'acceptation</div></div>
     </div>
 
     <div class="section-tag" style="margin-bottom:16px;">Courses en cours</div>
@@ -915,10 +918,31 @@
     const active = all.filter(c => ['assigned','en_route','picked_up'].includes(c.status));
     const history = all.filter(c => ['delivered','cancelled'].includes(c.status));
 
+    const delivered = history.filter(c => c.status === 'delivered');
     document.getElementById('tStatTotal').textContent  = all.length;
     document.getElementById('tStatActive').textContent = active.length;
-    document.getElementById('tStatDone').textContent   = history.filter(c => c.status === 'delivered').length;
+    document.getElementById('tStatDone').textContent   = delivered.length;
     document.getElementById('tStatRating').textContent = t.rating ? Number(t.rating).toFixed(1) : '—';
+
+    // Tonnage traité (livraisons complètes uniquement)
+    const totalKg = delivered.reduce((sum, c) => sum + (c.weight_kg || 0), 0);
+    document.getElementById('tStatWeight').textContent = totalKg >= 1000
+      ? (totalKg / 1000).toFixed(1) + ' t'
+      : totalKg + ' kg';
+
+    // Taux d'acceptation via dispatch_requests
+    const { data: dispatches } = await sb
+      .from('dispatch_requests')
+      .select('status')
+      .eq('transporteur_id', t.id)
+      .in('status', ['accepted', 'refused']);
+    if (dispatches && dispatches.length) {
+      const accepted = dispatches.filter(d => d.status === 'accepted').length;
+      const rate = Math.round((accepted / dispatches.length) * 100);
+      document.getElementById('tStatAcceptance').textContent = rate + '%';
+    } else {
+      document.getElementById('tStatAcceptance').textContent = '—';
+    }
 
     renderCarrierActiveCourses(active);
     renderCarrierHistory(history);
@@ -1105,7 +1129,12 @@
   }
 
   document.getElementById('authModalOverlay').addEventListener('click', function(e) {
-    if (e.target === this) closeAuth();
+    if (e.target !== this) return;
+    const msg = document.getElementById('authMsg');
+    if (msg && msg.textContent.trim()) return;
+    const pw = document.getElementById('loginPassword');
+    if (pw && pw.value) return;
+    closeAuth();
   });
 
   function setAccountType(type) {
@@ -1151,6 +1180,14 @@
     const el = document.getElementById('authMsg');
     el.textContent = '';
     el.className = 'auth-msg';
+  }
+
+  function toggleCguCheck(e) {
+    const cb = document.getElementById('c_cgu');
+    const vis = document.getElementById('c_cgu_visual');
+    if (!cb || !vis) return;
+    cb.checked = !cb.checked;
+    vis.classList.toggle('checked', cb.checked);
   }
 
   // ─── LOGIN ───
