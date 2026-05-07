@@ -1,6 +1,6 @@
-import * as THREE from 'three'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import * as THREE from 'https://esm.sh/three@0.167.1'
+import { gsap } from 'https://esm.sh/gsap@3.12.5'
+import { ScrollTrigger } from 'https://esm.sh/gsap@3.12.5/dist/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
