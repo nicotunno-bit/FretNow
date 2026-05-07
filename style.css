@@ -802,6 +802,16 @@ footer {
 }
 .vehicle-option:has(input:checked) span.vlabel { color: var(--text); }
 
+/* ─── CGU CHECKBOX ─── */
+.cgu-check {
+  width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;
+  border: 1px solid rgba(255,255,255,0.25);
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+#c_cgu:checked + .cgu-check { background: var(--orange); border-color: var(--orange); }
+#c_cgu:checked + .cgu-check::after { content: '✓'; font-size: 11px; color: var(--dark); font-weight: 700; }
+
 /* ─── ZONE TAGS INPUT ─── */
 .tags-input-wrapper {
   background: var(--dark4);
@@ -940,7 +950,7 @@ footer {
 }
 .dashboard-welcome span { color: var(--orange); }
 .dashboard-stats {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 2px; margin-bottom: 40px;
 }
 .dash-stat {
@@ -1133,4 +1143,170 @@ footer {
   .vehicle-grid { grid-template-columns: 1fr; }
   .dim-grid { grid-template-columns: 1fr; }
   .dashboard-stats { grid-template-columns: 1fr; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   TRUCK 3D SCROLL SECTION
+   Three.js canvas + GSAP ScrollTrigger pin
+   ════════════════════════════════════════════════════════════ */
+.truck-scroll-section {
+  position: relative;
+  height: 400vh;
+}
+
+.truck-sticky {
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #0d0c0a;
+}
+
+#truck-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Left-side gradient so text is readable over the 3D scene */
+.truck-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 6% 7%;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    rgba(13, 12, 10, 0.88) 0%,
+    rgba(13, 12, 10, 0.42) 32%,
+    transparent 58%
+  );
+}
+
+/* ─── Text panel ─── */
+.truck-text-panel {
+  position: relative;
+  width: 400px;
+  max-width: 42vw;
+  min-height: 220px;
+  flex-shrink: 0;
+}
+
+.truck-text-item {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.truck-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4.2vw, 60px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 10px 0 20px;
+}
+.truck-h2 em {
+  font-style: normal;
+  color: var(--orange);
+  display: block;
+}
+
+.truck-p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.72;
+  color: rgba(240, 237, 232, 0.52);
+  max-width: 320px;
+}
+
+/* ─── Right side progress ─── */
+.truck-progress-wrap {
+  position: absolute;
+  right: 6%;
+  bottom: 7%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.truck-scroll-hint {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.22);
+  writing-mode: vertical-rl;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.truck-progress-track {
+  width: 2px;
+  height: 110px;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.truck-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background: var(--orange);
+  box-shadow: 0 0 8px var(--orange);
+  transition: height 0.05s linear;
+}
+
+.truck-step-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.truck-step-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: background 0.3s, transform 0.3s;
+}
+
+.truck-step-dot.active {
+  background: var(--orange);
+  transform: scale(1.4);
+  box-shadow: 0 0 6px var(--orange);
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .truck-scroll-section { height: 450vh; }
+  .truck-text-panel { max-width: 78vw; }
+  .truck-h2 { font-size: clamp(30px, 8vw, 46px); }
+  .truck-overlay {
+    align-items: flex-end;
+    padding: 0 5% 14%;
+    background: linear-gradient(
+      to top,
+      rgba(13, 12, 10, 0.95) 0%,
+      rgba(13, 12, 10, 0.4) 45%,
+      transparent 100%
+    );
+  }
+  .truck-progress-wrap {
+    right: 4%;
+    bottom: 14%;
+  }
+}
+
+@media (max-width: 400px) {
+  .truck-text-panel { max-width: 90vw; }
 }
