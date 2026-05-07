@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script type="module" src="/src/truck-scene.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -69,6 +70,36 @@
       <div class="stat"><div class="stat-num">24H</div><div class="stat-label">Délai express</div></div>
       <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Traçabilité</div></div>
       <div class="stat"><div class="stat-num">FR+EU</div><div class="stat-label">Couverture</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     TRUCK 3D SCROLL — Vite / Three.js / GSAP ScrollTrigger
+     Rotation 360° Y = 100% du scroll. Texte sticky en reveal.
+     ══════════════════════════════════════════════════════════ -->
+<section class="truck-scroll-section" id="truck-scene">
+  <div class="truck-sticky">
+    <canvas id="truck-canvas"></canvas>
+
+    <div class="truck-overlay">
+      <!-- Text panel — lower left -->
+      <div class="truck-text-panel">
+        <!-- Panels injected by truck-scene.js / buildTextPanels() -->
+      </div>
+
+      <!-- Right side: progress bar + step dots + scroll hint -->
+      <div class="truck-progress-wrap">
+        <div class="truck-scroll-hint">SCROLL</div>
+        <div class="truck-progress-track">
+          <div class="truck-progress-fill" id="truckProgressFill"></div>
+        </div>
+        <div class="truck-step-dots">
+          <span class="truck-step-dot active"></span>
+          <span class="truck-step-dot"></span>
+          <span class="truck-step-dot"></span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
