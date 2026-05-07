@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "creative-web-3d": {
+      "source": "/tmp/creative-web-3d-skill/creative-web-3d",
+      "sourceType": "local",
+      "computedHash": "452ee9607a2476fbf4eff4d5ddb0bcaf4a384218b8566143f98b197ac97ebb40"
+    },
     "impeccable": {
       "source": "pbakaus/impeccable",
       "sourceType": "github",
