@@ -1,6 +1,6 @@
 import * as THREE from 'https://esm.sh/three@0.167.1'
 import { gsap } from 'https://esm.sh/gsap@3.12.5'
-import { ScrollTrigger } from 'https://esm.sh/gsap@3.12.5/dist/ScrollTrigger'
+import ScrollTrigger from 'https://esm.sh/gsap@3.12.5/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -70,7 +70,6 @@ function buildEnvMap(renderer) {
   tex.colorSpace = THREE.SRGBColorSpace
 
   const pmrem = new THREE.PMREMGenerator(renderer)
-  pmrem.compileEquirectangularShader()
   const rt = pmrem.fromEquirectangular(tex)
   tex.dispose(); pmrem.dispose()
   return rt.texture
@@ -135,8 +134,7 @@ function buildTrailerDecal() {
   ctx.font = '500 52px "Barlow", "Arial", sans-serif'
   ctx.textAlign = 'center'
   ctx.fillStyle = 'rgba(255,255,255,0.42)'
-  ctx.letterSpacing = '0.15em'
-  ctx.fillText('TRANSPORT INDUSTRIEL', cx, cy + 72)
+  ctx.fillText('TRANSPORT  INDUSTRIEL', cx, cy + 72)
 
   // Tiret décoratif gauche / droite
   ctx.fillStyle = 'rgba(255,106,0,0.55)'
