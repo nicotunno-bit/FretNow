@@ -7,9 +7,10 @@ export default function PageTabs() {
   return (
     <motion.div
       className="page-tabs"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.4, delay: 0.2 }}
+      style={{ position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 999 }}
     >
       {['client', 'carrier'].map((page, i) => (
         <motion.div

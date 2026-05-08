@@ -218,13 +218,13 @@ nav {
   pointer-events: none; white-space: nowrap; user-select: none;
 }
 
-.hero-content { position: relative; z-index: 2; max-width: 680px; }
+.hero-content { position: relative; max-width: 680px; }
 
 .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 0; }
 
 /* ─── Right panel — live network status ─── */
 .hero-right {
-  position: relative; z-index: 2;
+  position: relative;
   display: flex; flex-direction: column; gap: 16px;
 }
 
