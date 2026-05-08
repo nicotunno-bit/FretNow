@@ -12,9 +12,10 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      style={{ zIndex: 1000 }}
     >
       <div className="logo">
         <motion.img

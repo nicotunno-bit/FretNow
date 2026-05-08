@@ -89,7 +89,7 @@ body::before {
 /* ─── NAV ─── */
 nav {
   position: fixed; top: 0; left: 0; right: 0;
-  z-index: 1000;
+  z-index: 1000 !important;
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 48px;
   height: 64px;
@@ -137,7 +137,7 @@ nav {
 /* ─── PAGE TABS ─── */
 .page-tabs {
   position: fixed; top: 64px; left: 0; right: 0;
-  z-index: 999;
+  z-index: 999 !important;
   display: flex;
   background: var(--dark2);
   border-bottom: 1px solid var(--border);
@@ -186,6 +186,7 @@ nav {
   padding: 140px 48px 80px;
   overflow: hidden;
   gap: 60px;
+  isolation: isolate;
 }
 
 .hero-bg {
