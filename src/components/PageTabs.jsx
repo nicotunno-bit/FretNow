@@ -5,11 +5,8 @@ export default function PageTabs() {
   const { activePage, setActivePage } = useAuth()
 
   return (
-    <motion.div
+    <div
       className="page-tabs"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4, delay: 0.2 }}
       style={{ position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 999 }}
     >
       {['client', 'carrier'].map((page, i) => (
@@ -25,6 +22,6 @@ export default function PageTabs() {
           {page === 'client' ? 'Espace Client' : 'Espace Transporteur'}
         </motion.div>
       ))}
-    </motion.div>
+    </div>
   )
 }

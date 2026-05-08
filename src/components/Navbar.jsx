@@ -11,12 +11,7 @@ export default function Navbar() {
   const name = currentUser?.user_metadata?.company_name || email.split('@')[0]
 
   return (
-    <motion.nav
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
-      style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000 }}
-    >
+    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000 }}>
       <div className="logo">
         <motion.img
           src="/logo.png"
@@ -95,6 +90,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </nav>
   )
 }
