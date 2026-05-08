@@ -56,6 +56,7 @@ export default function App() {
           initial="hidden"
           animate="visible"
           exit="exit"
+          style={{ position: 'relative', zIndex: 1 }}
         >
           {activePage === 'client' ? <ClientPage /> : <CarrierPage />}
         </motion.div>
