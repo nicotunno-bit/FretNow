@@ -112,46 +112,26 @@ function initTruckScene() {
     scene.add(l)
   }
 
-  // ── Materials (physically based) ─────────────────────────────
+  // Accessibility (skill guideline: canvas needs role + aria-label)
+  canvas.setAttribute('role', 'img')
+  canvas.setAttribute('aria-label', 'Camion FRET américain 3D en rotation')
+
+  // ── Materials — MeshStandardMaterial only (compatible all WebGL) ─
   const M = {
-    // Truck paint — MeshPhysicalMaterial with clearcoat for car-paint look
-    paint: new THREE.MeshPhysicalMaterial({
-      color: 0xff6a00, metalness: 0.05, roughness: 0.28,
-      clearcoat: 1.0, clearcoatRoughness: 0.06, envMapIntensity: 1.2,
-    }),
-    // Chrome — near-perfect mirror
-    chrome: new THREE.MeshPhysicalMaterial({
-      color: 0xd8d8d8, metalness: 1.0, roughness: 0.05, envMapIntensity: 2.8,
-    }),
-    // Cab interior / dark plastic
-    dark:  new THREE.MeshStandardMaterial({ color: 0x1c1a17, metalness: 0.1, roughness: 0.82 }),
-    black: new THREE.MeshStandardMaterial({ color: 0x0d0c0b, metalness: 0.05, roughness: 0.9 }),
-    // Windshield / windows
-    glass: new THREE.MeshPhysicalMaterial({
-      color: 0x7fb0cc, metalness: 0.0, roughness: 0.0,
-      transmission: 0.88, transparent: true, opacity: 0.35, envMapIntensity: 1.8,
-    }),
-    // Tires
-    rubber: new THREE.MeshStandardMaterial({ color: 0x111010, metalness: 0.15, roughness: 0.75 }),
-    // Trailer body
-    trailer: new THREE.MeshStandardMaterial({ color: 0x1e1c1a, metalness: 0.12, roughness: 0.78 }),
-    // Aluminium fuel tanks
-    tank: new THREE.MeshPhysicalMaterial({
-      color: 0x9a9a9a, metalness: 0.75, roughness: 0.35, clearcoat: 0.4, clearcoatRoughness: 0.25,
-    }),
-    // Headlights
-    headlight: new THREE.MeshStandardMaterial({ color: 0xfffce0, emissive: 0xffcc44, emissiveIntensity: 3.2 }),
-    // Turn signals
-    amber: new THREE.MeshStandardMaterial({ color: 0xff9900, emissive: 0xff7700, emissiveIntensity: 2.0 }),
-    // Marker lights (DOT)
-    marker: new THREE.MeshStandardMaterial({ color: 0xff2200, emissive: 0xff1100, emissiveIntensity: 1.8 }),
-    markerW: new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.5 }),
-    // Orange reflective trailer stripe
-    refl: new THREE.MeshStandardMaterial({
-      color: 0xff6a00, emissive: 0x441800, emissiveIntensity: 0.5, roughness: 0.3,
-    }),
-    // Grille bars
-    grille: new THREE.MeshStandardMaterial({ color: 0x1e1e1e, metalness: 0.35, roughness: 0.65 }),
+    paint:    new THREE.MeshStandardMaterial({ color: 0xff6a00, metalness: 0.12, roughness: 0.22, envMapIntensity: 1.2 }),
+    chrome:   new THREE.MeshStandardMaterial({ color: 0xd8d8d8, metalness: 1.0,  roughness: 0.08, envMapIntensity: 2.0 }),
+    dark:     new THREE.MeshStandardMaterial({ color: 0x1c1a17, metalness: 0.1,  roughness: 0.82 }),
+    black:    new THREE.MeshStandardMaterial({ color: 0x0d0c0b, metalness: 0.05, roughness: 0.9  }),
+    glass:    new THREE.MeshStandardMaterial({ color: 0x88b8cc, metalness: 0.05, roughness: 0.06, transparent: true, opacity: 0.32 }),
+    rubber:   new THREE.MeshStandardMaterial({ color: 0x111010, metalness: 0.08, roughness: 0.88 }),
+    trailer:  new THREE.MeshStandardMaterial({ color: 0x1e1c1a, metalness: 0.12, roughness: 0.78 }),
+    tank:     new THREE.MeshStandardMaterial({ color: 0x9a9a9a, metalness: 0.72, roughness: 0.28, envMapIntensity: 1.4 }),
+    headlight:new THREE.MeshStandardMaterial({ color: 0xfffce0, emissive: 0xffcc44, emissiveIntensity: 4.0 }),
+    amber:    new THREE.MeshStandardMaterial({ color: 0xff9900, emissive: 0xff7700, emissiveIntensity: 2.8 }),
+    marker:   new THREE.MeshStandardMaterial({ color: 0xff2200, emissive: 0xff1100, emissiveIntensity: 2.2 }),
+    markerW:  new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 1.8 }),
+    refl:     new THREE.MeshStandardMaterial({ color: 0xff6a00, emissive: 0x441800, emissiveIntensity: 0.6, roughness: 0.28 }),
+    grille:   new THREE.MeshStandardMaterial({ color: 0x1e1e1e, metalness: 0.35,  roughness: 0.65 }),
   }
 
   // ── Geometry helpers ─────────────────────────────────────────
