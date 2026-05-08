@@ -21,7 +21,7 @@
     <a href="#fonctionnement">Comment ça marche</a>
     <a href="#services">Services</a>
     <a href="#commande" class="nav-cta">Devis Express</a>
-    <button type="button" onclick="openAuth('client')" id="btnClientLogin" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--muted);font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;cursor:pointer;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--orange)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,0.15)'">Connexion</button>
+    <button type="button" onclick="openAuth('client')" id="btnClientLogin" class="btn-nav-login">Connexion</button>
     <div class="user-badge" id="userBadgeClient">
       <div class="avatar" id="userAvatarClient">?</div>
       <span id="userEmailClient" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
@@ -32,7 +32,7 @@
     <a href="#carrier-inscription">S'inscrire</a>
     <a href="#carrier-avantages">Avantages</a>
     <a href="#carrier-inscription" class="nav-cta">Rejoindre le réseau</a>
-    <button type="button" onclick="openAuth('carrier')" id="btnCarrierLogin" style="background:none;border:1px solid rgba(255,255,255,0.15);color:var(--muted);font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;cursor:pointer;clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--orange)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='rgba(255,255,255,0.15)'">Connexion</button>
+    <button type="button" onclick="openAuth('carrier')" id="btnCarrierLogin" class="btn-nav-login">Connexion</button>
     <div class="user-badge" id="userBadgeCarrier">
       <div class="avatar" id="userAvatarCarrier">?</div>
       <span id="userEmailCarrier" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
@@ -62,14 +62,39 @@
     <div class="hero-tag">Transport Industriel</div>
     <h1>Votre fret,<br><em>livré vite.</em></h1>
     <p>Colis, palettes, pièces industrielles hors gabarit — FretNow organise votre transport de A à Z avec des délais maîtrisés et une traçabilité totale.</p>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;">
-      <a href="#commande" style="display:inline-flex;align-items:center;gap:12px;background:var(--orange);color:var(--dark);font-family:var(--font-display);font-size:16px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:16px 36px;text-decoration:none;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);transition:background 0.2s;" onmouseover="this.style.background='#FF8C00'" onmouseout="this.style.background='var(--orange)'">Demander un devis ›</a>
-      <a href="#fonctionnement" style="display:inline-flex;align-items:center;gap:12px;background:transparent;color:var(--text);font-family:var(--font-display);font-size:16px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:16px 36px;text-decoration:none;border:1px solid rgba(255,255,255,0.15);clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'">Comment ça marche</a>
+    <div class="hero-ctas">
+      <a href="#commande" class="btn-primary">Demander un devis</a>
+      <a href="#fonctionnement" class="btn-ghost">Comment ça marche</a>
     </div>
     <div class="hero-stats">
       <div class="stat"><div class="stat-num">24H</div><div class="stat-label">Délai express</div></div>
       <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Traçabilité</div></div>
       <div class="stat"><div class="stat-num">FR+EU</div><div class="stat-label">Couverture</div></div>
+    </div>
+  </div><!-- /hero-content -->
+  <div class="hero-right">
+    <div class="hero-live-card">
+      <div class="hero-live-label"><span class="hero-live-dot"></span>Réseau en ligne</div>
+      <div class="hero-live-num">847</div>
+      <div class="hero-live-sub">transporteurs disponibles</div>
+    </div>
+    <div class="hero-coverage">
+      <div style="font-family:var(--font-display);font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);margin-bottom:4px;">Couverture</div>
+      <div class="coverage-row">
+        <span class="coverage-label">France</span>
+        <div class="coverage-bar-wrap"><div class="coverage-bar" style="width:94%"></div></div>
+        <span class="coverage-val">94%</span>
+      </div>
+      <div class="coverage-row">
+        <span class="coverage-label">Europe</span>
+        <div class="coverage-bar-wrap"><div class="coverage-bar" style="width:68%"></div></div>
+        <span class="coverage-val">68%</span>
+      </div>
+      <div class="coverage-row">
+        <span class="coverage-label">Express 24H</span>
+        <div class="coverage-bar-wrap"><div class="coverage-bar" style="width:100%"></div></div>
+        <span class="coverage-val">100%</span>
+      </div>
     </div>
   </div>
 </section>
@@ -226,21 +251,25 @@
   <h2 class="section-title">Comment ça marche</h2>
   <div class="steps-grid">
     <div class="step">
+      <div class="step-dot"></div>
       <div class="step-num">01</div>
       <div class="step-title">Configurez</div>
       <div class="step-desc">Renseignez les caractéristiques de votre expédition en 2 minutes via notre formulaire express.</div>
     </div>
     <div class="step">
+      <div class="step-dot"></div>
       <div class="step-num">02</div>
       <div class="step-title">Recherche</div>
       <div class="step-desc">Notre système contacte les transporteurs dans un rayon de 10 km, puis élargit jusqu'à 100 km si besoin.</div>
     </div>
     <div class="step">
+      <div class="step-dot"></div>
       <div class="step-num">03</div>
       <div class="step-title">Prise en charge</div>
       <div class="step-desc">Le premier transporteur disponible accepte votre fret et démarre vers le point de chargement.</div>
     </div>
     <div class="step">
+      <div class="step-dot"></div>
       <div class="step-num">04</div>
       <div class="step-title">Suivez</div>
       <div class="step-desc">Tracking GPS temps réel de la prise en charge jusqu'à la livraison finale.</div>
@@ -254,31 +283,37 @@
   <h2 class="section-title">Nos spécialités</h2>
   <div class="services-grid">
     <div class="service-card">
+      <span class="service-num-bg">01</span>
       <span class="service-icon">📦</span>
       <div class="service-title">Colis & Palettes</div>
       <div class="service-desc">De la palette Europe au colis express, nous gérons tous volumes avec soin. Enlèvements partout en France.</div>
     </div>
     <div class="service-card">
+      <span class="service-num-bg">02</span>
       <span class="service-icon">🏗</span>
       <div class="service-title">Pièces Industrielles</div>
       <div class="service-desc">Machines, équipements hors gabarit, convois spéciaux. Nous gérons les transports complexes avec escorte si besoin.</div>
     </div>
     <div class="service-card">
+      <span class="service-num-bg">03</span>
       <span class="service-icon">⚡</span>
       <div class="service-title">Express 24H</div>
       <div class="service-desc">Urgence ? Notre réseau de transporteurs dédiés assure des livraisons dans les 24h sur tout le territoire.</div>
     </div>
     <div class="service-card">
+      <span class="service-num-bg">04</span>
       <span class="service-icon">🌍</span>
       <div class="service-title">Transport Europe</div>
       <div class="service-desc">Couverture internationale sur l'ensemble de l'Union Européenne avec gestion des formalités douanières.</div>
     </div>
     <div class="service-card">
+      <span class="service-num-bg">05</span>
       <span class="service-icon">❄️</span>
       <div class="service-title">Transport Frigorifique</div>
       <div class="service-desc">Denrées sensibles à température dirigée, chaîne du froid garantie de bout en bout.</div>
     </div>
     <div class="service-card">
+      <span class="service-num-bg">06</span>
       <span class="service-icon">🛡</span>
       <div class="service-title">Marchandises de valeur</div>
       <div class="service-desc">Assurance ad valorem, véhicules sécurisés, convoyeurs dédiés pour vos expéditions à haute valeur.</div>
@@ -293,8 +328,7 @@
       <div class="section-tag">Espace client</div>
       <div class="dashboard-welcome">Bonjour, <span id="dashNameClient">—</span></div>
     </div>
-    <button onclick="scrollToForm()"
-      style="display:inline-flex;align-items:center;gap:10px;background:var(--orange);color:var(--dark);font-family:var(--font-display);font-size:15px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:14px 28px;border:none;cursor:pointer;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);">
+    <button onclick="scrollToForm()" class="btn-primary">
       + Nouvelle commande
     </button>
   </div>
@@ -369,11 +403,11 @@
     <div class="hero-grid"></div>
     <div class="hero-content">
       <div class="hero-tag">Réseau Transporteur</div>
-      <h1 style="font-family:var(--font-display);font-size:clamp(52px,7vw,86px);font-weight:900;line-height:0.92;letter-spacing:-0.01em;text-transform:uppercase;margin-bottom:24px;">Développez<br><em style="font-style:normal;color:var(--orange);display:block;">votre activité.</em></h1>
-      <p style="font-size:17px;font-weight:300;line-height:1.7;color:rgba(240,237,232,0.65);max-width:500px;margin-bottom:36px;">Rejoignez le réseau FretNow et accédez à des missions de transport industriel qualifiées, sans démarchage commercial. Vous vous concentrez sur la route, on gère le reste.</p>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;">
-        <a href="#carrier-inscription" style="display:inline-flex;align-items:center;gap:12px;background:var(--orange);color:var(--dark);font-family:var(--font-display);font-size:16px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:16px 36px;text-decoration:none;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);" onmouseover="this.style.background='#FF8C00'" onmouseout="this.style.background='var(--orange)'">S'inscrire maintenant ›</a>
-        <a href="#carrier-avantages" style="display:inline-flex;align-items:center;gap:12px;background:transparent;color:var(--text);font-family:var(--font-display);font-size:16px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:16px 36px;text-decoration:none;border:1px solid rgba(255,255,255,0.15);clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'">Nos avantages</a>
+      <h1>Développez<br><em>votre activité.</em></h1>
+      <p>Rejoignez le réseau FretNow et accédez à des missions de transport industriel qualifiées, sans démarchage commercial. Vous vous concentrez sur la route, on gère le reste.</p>
+      <div class="hero-ctas">
+        <a href="#carrier-inscription" class="btn-primary">S'inscrire maintenant</a>
+        <a href="#carrier-avantages" class="btn-ghost">Nos avantages</a>
       </div>
       <div class="hero-stats" style="margin-top:40px;">
         <div class="stat"><div class="stat-num">0€</div><div class="stat-label">Inscription</div></div>
@@ -389,31 +423,37 @@
     <h2 class="section-title">Ce qu'on vous apporte</h2>
     <div class="benefits-grid">
       <div class="benefit-card">
+        <span class="benefit-icon">✓</span>
         <div class="benefit-num">01</div>
         <div class="benefit-title">Missions qualifiées</div>
         <div class="benefit-desc">Chaque transport est vérifié et détaillé avant attribution — marchandise, format, délai, itinéraire. Aucune mauvaise surprise.</div>
       </div>
       <div class="benefit-card">
+        <span class="benefit-icon">💳</span>
         <div class="benefit-num">02</div>
         <div class="benefit-title">Paiement rapide</div>
         <div class="benefit-desc">Règlement sous 30 jours maximum, souvent moins. Pas de relances, pas de paperasse interminable.</div>
       </div>
       <div class="benefit-card">
+        <span class="benefit-icon">📱</span>
         <div class="benefit-num">03</div>
         <div class="benefit-title">Interface dédiée</div>
         <div class="benefit-desc">Un espace transporteur pour gérer vos missions, mettre à jour le tracking et accéder à vos documents depuis n'importe où.</div>
       </div>
       <div class="benefit-card">
+        <span class="benefit-icon">📡</span>
         <div class="benefit-num">04</div>
         <div class="benefit-title">Zéro démarchage</div>
         <div class="benefit-desc">Fini le porte-à-porte. FretNow apporte les clients, vous apportez les camions. C'est aussi simple que ça.</div>
       </div>
       <div class="benefit-card">
+        <span class="benefit-icon">🎧</span>
         <div class="benefit-num">05</div>
         <div class="benefit-title">Support 7j/7</div>
         <div class="benefit-desc">Une équipe disponible pour vous accompagner en cas d'imprévu sur la route ou de question logistique.</div>
       </div>
       <div class="benefit-card">
+        <span class="benefit-icon">🌍</span>
         <div class="benefit-num">06</div>
         <div class="benefit-title">Visibilité nationale</div>
         <div class="benefit-desc">Accédez à des chargeurs partout en France et en Europe sans investir dans une force de vente.</div>
