@@ -1,8 +1,15 @@
+import { motion } from 'framer-motion'
+
 export default function Footer() {
   return (
-    <footer>
+    <motion.footer
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.6 }}
+    >
       <div className="footer-logo">
-        <img src="logo.png" alt="T&amp;L Freight" style={{ height: '100px' }} />
+        <img src="/logo.png" alt="FretNow" style={{ height: '100px' }} />
       </div>
       <p className="footer-copy">© 2026 FretNow — Transport Industriel</p>
       <div className="footer-links">
@@ -10,6 +17,6 @@ export default function Footer() {
         <a href="#">Mentions légales</a>
         <a href="#">Contact</a>
       </div>
-    </footer>
+    </motion.footer>
   )
 }
