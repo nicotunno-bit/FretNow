@@ -15,7 +15,7 @@ export default function Navbar() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4 }}
-      style={{ zIndex: 1000 }}
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000 }}
     >
       <div className="logo">
         <motion.img
