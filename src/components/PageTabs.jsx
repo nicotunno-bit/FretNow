@@ -5,10 +5,7 @@ export default function PageTabs() {
   const { activePage, setActivePage } = useAuth()
 
   return (
-    <div
-      className="page-tabs"
-      style={{ position: 'fixed', top: '64px', left: 0, right: 0, zIndex: 999 }}
-    >
+    <div className="page-tabs">
       {['client', 'carrier'].map((page, i) => (
         <motion.div
           key={page}

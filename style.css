@@ -25,11 +25,16 @@
 
 html { scroll-behavior: smooth; }
 
+html {
+  background: #0b0b0b;
+}
+
 body {
   background: var(--dark);
   color: var(--text);
   font-family: var(--font-body);
   overflow-x: hidden;
+  overscroll-behavior-y: none;
   cursor: default;
 }
 
@@ -40,7 +45,7 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
   opacity: 0.032;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 1;
 }
 
 /* ─── REDUCED MOTION ─── */
@@ -89,14 +94,14 @@ body::before {
 /* ─── NAV ─── */
 nav {
   position: fixed; top: 0; left: 0; right: 0;
-  z-index: 1000 !important;
+  z-index: 10000;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 48px;
-  height: 64px;
-  background: rgba(11,11,11,0.96);
-  backdrop-filter: blur(24px) saturate(1.4);
+  padding: env(safe-area-inset-top, 0px) 48px 0;
+  height: calc(64px + env(safe-area-inset-top, 0px));
+  background: #0b0b0b;
   border-bottom: 1px solid var(--border-sub);
   box-shadow: 0 1px 0 rgba(255,107,0,0.08);
+  transform: translateZ(0);
 }
 
 .logo {
@@ -136,7 +141,7 @@ nav {
 
 /* ─── PAGE TABS ─── */
 .page-tabs {
-  position: fixed; top: 64px; left: 0; right: 0;
+  position: fixed; top: calc(64px + env(safe-area-inset-top, 0px)); left: 0; right: 0;
   z-index: 999 !important;
   display: flex;
   background: var(--dark2);
@@ -1255,15 +1260,15 @@ footer::before {
 
   /* NAV : logo seul, liens masqués */
   nav {
-    padding: 0 16px;
-    height: 56px;
+    padding: env(safe-area-inset-top, 0px) 16px 0;
+    height: calc(56px + env(safe-area-inset-top, 0px));
     justify-content: space-between;
   }
   .logo img { height: 44px !important; }
   .nav-links { display: none !important; }
 
   /* Tabs : taille réduite */
-  .page-tabs { top: 56px; }
+  .page-tabs { top: calc(56px + env(safe-area-inset-top, 0px)); }
   .page-tab { font-size: 12px; padding: 10px 8px; gap: 6px; }
   .page-tab .tab-icon { font-size: 14px; }
 

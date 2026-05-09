@@ -11,7 +11,7 @@ export default function Navbar() {
   const name = currentUser?.user_metadata?.company_name || email.split('@')[0]
 
   return (
-    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000 }}>
+    <nav>
       <div className="logo">
         <motion.img
           src="/logo.png"
