@@ -254,14 +254,17 @@ nav {
 .truck-text-panel {
   position: absolute;
   left: 60px;
-  bottom: 80px;
+  top: 50%;
+  transform: translateY(-50%);
   width: clamp(280px, 36%, 480px);
   will-change: opacity;
 }
 
 .truck-text-item {
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   will-change: opacity, transform;
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
@@ -1572,7 +1575,7 @@ footer::before {
   .hero-truck-h1 { font-size: clamp(38px, 11vw, 58px); }
   .hero-truck-p { font-size: 14px; max-width: 90%; }
   .hero-truck-stats { gap: 20px; }
-  .truck-text-panel { left: 20px; bottom: 60px; width: calc(100% - 80px); }
+  .truck-text-panel { left: 20px; top: 50%; transform: translateY(-50%); width: calc(100% - 80px); }
   .truck-h2 { font-size: clamp(28px, 8vw, 40px); }
   .truck-progress-wrap { right: 16px; }
 }
