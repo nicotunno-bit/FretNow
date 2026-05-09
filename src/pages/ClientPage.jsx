@@ -1,6 +1,5 @@
 import { useAuth } from '../context/AuthContext'
-import Hero from '../components/Hero'
-import TruckScene from '../components/TruckScene'
+import HeroTruck from '../components/HeroTruck'
 import TransportForm from '../components/TransportForm'
 import HowItWorks from '../components/HowItWorks'
 import Services from '../components/Services'
@@ -28,8 +27,7 @@ export default function ClientPage() {
 
   return (
     <div className="page-view active" id="page-client">
-      <Hero />
-      <TruckScene />
+      <HeroTruck />
       <TransportForm onSuccess={handleFormSuccess} />
       <HowItWorks />
       <Services />

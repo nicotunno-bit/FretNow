@@ -171,15 +171,104 @@ nav {
 .page-view { display: none; }
 .page-view.active { display: block; }
 
-/* Décalage pour nav (64px) + tabs (~47px) = 111px */
-.page-view.active > section:first-child,
-.page-view.active > .hero,
+/* Sections after the hero get normal top padding */
+.page-view.active > section:not(.hero-truck-section):first-child,
 .carrier-hero {
   padding-top: 140px;
 }
 
 /* ═══════════════════════════════════════════════
-   HERO — Two-column dramatic layout
+   HERO TRUCK — Full-screen 3D landing
+   ═══════════════════════════════════════════════ */
+.hero-truck-section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+  background: #0b0b0b;
+}
+
+.hero-truck-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-truck-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: calc(env(safe-area-inset-top, 0px) + 110px) 60px 80px;
+  background: linear-gradient(
+    to right,
+    rgba(11,11,11,0.82) 0%,
+    rgba(11,11,11,0.55) 45%,
+    transparent 75%
+  );
+  pointer-events: none;
+}
+
+.hero-truck-overlay > * { pointer-events: auto; }
+
+.hero-truck-h1 {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 7vw, 92px);
+  font-weight: 900;
+  line-height: 0.93;
+  letter-spacing: -0.01em;
+  margin: 10px 0 18px;
+  color: var(--text);
+  max-width: 640px;
+}
+.hero-truck-h1 em {
+  font-style: normal;
+  color: var(--orange);
+}
+
+.hero-truck-p {
+  font-size: clamp(14px, 1.4vw, 16px);
+  color: var(--text-dim);
+  max-width: 480px;
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.hero-truck-stats {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border-sub);
+  display: flex;
+  gap: 36px;
+}
+
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--orange);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  opacity: 0.65;
+  pointer-events: none;
+}
+.hero-scroll-hint span:last-child {
+  font-size: 9px;
+}
+
+/* ═══════════════════════════════════════════════
+   HERO — Two-column dramatic layout (kept for carrier page ref)
    ═══════════════════════════════════════════════ */
 .hero {
   min-height: 100vh;
@@ -1272,11 +1361,9 @@ footer::before {
   .page-tab { font-size: 12px; padding: 10px 8px; gap: 6px; }
   .page-tab .tab-icon { font-size: 14px; }
 
-  /* Offset pour nav 56px + tabs ~42px = ~98px */
-  .page-view.active > section:first-child,
-  .page-view.active > .hero,
-  .carrier-hero,
-  .hero {
+  /* Offset pour nav 56px + tabs ~42px = ~98px (non-hero sections) */
+  .page-view.active > section:not(.hero-truck-section):first-child,
+  .carrier-hero {
     padding-top: 110px;
   }
 
@@ -1393,172 +1480,18 @@ footer::before {
   .dashboard-stats { grid-template-columns: 1fr; }
 }
 
-/* ════════════════════════════════════════════════════════════
-   TRUCK 3D SCROLL SECTION
-   Three.js canvas + GSAP ScrollTrigger pin
-   ════════════════════════════════════════════════════════════ */
-.truck-scroll-section {
-  position: relative;
-  height: 400vh;
-}
-
-.truck-sticky {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-  background: #090807;
-}
-
-#truck-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* Left-side gradient so text is readable over the 3D scene */
-.truck-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  padding: 0 6% 7%;
-  pointer-events: none;
-  background: linear-gradient(
-    to right,
-    rgba(13, 12, 10, 0.88) 0%,
-    rgba(13, 12, 10, 0.42) 32%,
-    transparent 58%
-  );
-}
-
-/* ─── Text panel ─── */
-.truck-text-panel {
-  position: relative;
-  width: 400px;
-  max-width: 42vw;
-  min-height: 220px;
-  flex-shrink: 0;
-}
-
-.truck-text-item {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  will-change: transform, opacity;
-}
-
-.truck-h2 {
-  font-family: var(--font-display);
-  font-size: clamp(38px, 4.5vw, 64px);
-  font-weight: 900;
-  line-height: 0.9;
-  letter-spacing: -0.015em;
-  text-transform: uppercase;
-  color: var(--text);
-  margin: 12px 0 22px;
-}
-.truck-h2 em {
-  font-style: normal;
-  display: block;
-  background: linear-gradient(92deg, var(--orange) 0%, var(--orange-hot) 60%, #ffaa44 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.truck-p {
-  font-family: var(--font-body);
-  font-size: 15px;
-  line-height: 1.75;
-  color: rgba(240, 237, 232, 0.55);
-  max-width: 340px;
-}
-
-/* ─── Right side progress ─── */
-.truck-progress-wrap {
-  position: absolute;
-  right: 6%;
-  bottom: 7%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-}
-
-.truck-scroll-hint {
-  font-family: var(--font-display);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  color: rgba(255, 255, 255, 0.22);
-  writing-mode: vertical-rl;
-  text-transform: uppercase;
-  user-select: none;
-}
-
-.truck-progress-track {
-  width: 2px;
-  height: 110px;
-  background: rgba(255, 255, 255, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.truck-progress-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 0%;
-  background: var(--orange);
-  box-shadow: 0 0 8px var(--orange);
-  transition: height 0.05s linear;
-}
-
-.truck-step-dots {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.truck-step-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  transition: background 0.3s, transform 0.3s;
-}
-
-.truck-step-dot.active {
-  background: var(--orange);
-  transform: scale(1.4);
-  box-shadow: 0 0 6px var(--orange);
-}
-
-/* ─── Responsive truck ─── */
+/* ─── Hero truck responsive ─── */
 @media (max-width: 768px) {
-  .truck-scroll-section { height: 450vh; }
-  .truck-text-panel { max-width: 78vw; }
-  .truck-h2 { font-size: clamp(30px, 8vw, 46px); }
-  .truck-overlay {
-    align-items: flex-end;
-    padding: 0 5% 14%;
+  .hero-truck-overlay {
+    padding: calc(env(safe-area-inset-top, 0px) + 106px) 20px 60px;
     background: linear-gradient(
-      to top,
-      rgba(13, 12, 10, 0.95) 0%,
-      rgba(13, 12, 10, 0.4) 45%,
-      transparent 100%
+      to right,
+      rgba(11,11,11,0.88) 0%,
+      rgba(11,11,11,0.60) 55%,
+      transparent 85%
     );
   }
-  .truck-progress-wrap {
-    right: 4%;
-    bottom: 14%;
-  }
-}
-
-@media (max-width: 400px) {
-  .truck-text-panel { max-width: 90vw; }
+  .hero-truck-h1 { font-size: clamp(40px, 11vw, 60px); }
+  .hero-truck-p { font-size: 14px; max-width: 90%; }
+  .hero-truck-stats { gap: 20px; }
 }
