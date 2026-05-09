@@ -178,15 +178,23 @@ nav {
 }
 
 /* ═══════════════════════════════════════════════
-   HERO TRUCK — Full-screen 3D landing
+   HERO TRUCK — Scroll-pinned 3D landing (500vh)
    ═══════════════════════════════════════════════ */
 .hero-truck-section {
   position: relative;
   width: 100%;
-  height: 100vh;
-  min-height: 600px;
-  overflow: hidden;
+  height: 500vh;
   background: #0b0b0b;
+}
+
+/* Sticky inner — stays fixed while user scrolls through 500vh */
+.truck-sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .hero-truck-canvas {
@@ -197,7 +205,8 @@ nav {
   display: block;
 }
 
-.hero-truck-overlay {
+/* ── Phase 1: hero intro overlay ── */
+.hero-intro-overlay {
   position: absolute;
   inset: 0;
   display: flex;
@@ -206,14 +215,12 @@ nav {
   padding: calc(env(safe-area-inset-top, 0px) + 110px) 60px 80px;
   background: linear-gradient(
     to right,
-    rgba(11,11,11,0.82) 0%,
-    rgba(11,11,11,0.55) 45%,
-    transparent 75%
+    rgba(11,11,11,0.80) 0%,
+    rgba(11,11,11,0.50) 48%,
+    transparent 72%
   );
-  pointer-events: none;
+  will-change: opacity, transform;
 }
-
-.hero-truck-overlay > * { pointer-events: auto; }
 
 .hero-truck-h1 {
   font-family: var(--font-display);
@@ -225,10 +232,7 @@ nav {
   color: var(--text);
   max-width: 640px;
 }
-.hero-truck-h1 em {
-  font-style: normal;
-  color: var(--orange);
-}
+.hero-truck-h1 em { font-style: normal; color: var(--orange); }
 
 .hero-truck-p {
   font-size: clamp(14px, 1.4vw, 16px);
@@ -246,6 +250,101 @@ nav {
   gap: 36px;
 }
 
+/* ── Phase 2: step text panels ── */
+.truck-text-panel {
+  position: absolute;
+  left: 60px;
+  bottom: 80px;
+  width: clamp(280px, 36%, 480px);
+  will-change: opacity;
+}
+
+.truck-text-item {
+  position: absolute;
+  inset: 0;
+  will-change: opacity, transform;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.truck-h2 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4.5vw, 58px);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  margin: 10px 0 16px;
+  color: var(--text);
+}
+.truck-h2 em { font-style: normal; color: var(--orange); }
+
+.truck-p {
+  font-size: clamp(13px, 1.3vw, 15px);
+  color: var(--text-dim);
+  line-height: 1.65;
+  max-width: 400px;
+}
+
+/* ── Progress bar ── */
+.truck-progress-wrap {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.truck-scroll-hint {
+  font-family: var(--font-display);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--orange);
+  opacity: 0.55;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+.truck-progress-track {
+  width: 2px;
+  height: 120px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.truck-progress-fill {
+  width: 100%;
+  height: 0%;
+  background: var(--orange);
+  border-radius: 2px;
+  transition: height 0.1s linear;
+}
+
+.truck-step-dots {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.truck-step-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  transition: background 0.3s, transform 0.3s;
+}
+.truck-step-dot.active {
+  background: var(--orange);
+  transform: scale(1.4);
+  box-shadow: 0 0 6px var(--orange);
+}
+
+/* ── Scroll arrow ── */
 .hero-scroll-hint {
   position: absolute;
   bottom: 28px;
@@ -260,12 +359,10 @@ nav {
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.25em;
-  opacity: 0.65;
   pointer-events: none;
+  will-change: opacity;
 }
-.hero-scroll-hint span:last-child {
-  font-size: 9px;
-}
+.hero-scroll-hint span:last-child { font-size: 9px; }
 
 /* ═══════════════════════════════════════════════
    HERO — Two-column dramatic layout (kept for carrier page ref)
@@ -1465,6 +1562,19 @@ footer::before {
   }
   .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
   footer img { height: 60px !important; }
+
+  /* Hero truck mobile */
+  .hero-truck-section { height: 450vh; }
+  .hero-intro-overlay {
+    padding: calc(env(safe-area-inset-top, 0px) + 106px) 20px 60px;
+    background: linear-gradient(to right, rgba(11,11,11,0.88) 0%, rgba(11,11,11,0.60) 55%, transparent 85%);
+  }
+  .hero-truck-h1 { font-size: clamp(38px, 11vw, 58px); }
+  .hero-truck-p { font-size: 14px; max-width: 90%; }
+  .hero-truck-stats { gap: 20px; }
+  .truck-text-panel { left: 20px; bottom: 60px; width: calc(100% - 80px); }
+  .truck-h2 { font-size: clamp(28px, 8vw, 40px); }
+  .truck-progress-wrap { right: 16px; }
 }
 
 /* ════════════════════════════════════════════
